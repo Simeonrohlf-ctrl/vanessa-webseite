@@ -1,0 +1,584 @@
+
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#d63378">
+<title>Vanessa – Der große Ausbruch</title>
+<style>
+:root{
+  --pink-1:#ffe4ef; --pink-2:#f8b4d0; --pink-3:#ec78a8;
+  --pink-4:#c93678; --pink-5:#74143f; --ink:#351526;
+  --glass:rgba(255,255,255,.19); --line:rgba(255,255,255,.36);
+  --shadow:0 22px 70px rgba(91,14,49,.22);
+}
+*{box-sizing:border-box}
+html{min-height:100%;background:#d94c89}
+body{
+  margin:0;min-height:100vh;color:#fff;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:linear-gradient(135deg,var(--pink-1) 0%,var(--pink-2) 27%,var(--pink-3) 58%,var(--pink-4) 82%,var(--pink-5) 100%);
+  background-attachment:fixed;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 15% 10%,rgba(255,255,255,.38),transparent 42%),
+             radial-gradient(ellipse at 90% 90%,rgba(67,0,31,.17),transparent 48%);
+}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:22px 16px 36px}
+.topbar{width:min(920px,100%);display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand{font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:rgba(75,13,43,.75)}
+.sound-toggle,.glass-btn,.answer-btn{
+  border:1px solid var(--line);background:rgba(255,255,255,.2);color:white;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 8px 28px rgba(77,10,39,.12),inset 0 1px 0 rgba(255,255,255,.35);
+}
+.sound-toggle{border-radius:999px;padding:10px 15px;font-size:.9rem;color:#fff}
+main{width:min(920px,100%);display:flex;flex:1;align-items:center;justify-content:center}
+.panel{
+  width:100%;max-width:760px;padding:clamp(24px,5vw,48px);
+  border:1px solid rgba(255,255,255,.4);border-radius:30px;
+  background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.09));
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.42);
+  animation:appear .42s ease both;
+}
+@keyframes appear{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.eyebrow{font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:rgba(255,255,255,.78);margin:0 0 12px}
+h1{font-size:clamp(2.1rem,7vw,4.3rem);line-height:1.02;margin:0 0 18px;letter-spacing:-.045em}
+h2{font-size:clamp(1.65rem,5vw,2.5rem);line-height:1.12;margin:0 0 16px;letter-spacing:-.03em}
+p{line-height:1.65;color:rgba(255,255,255,.9)}
+.lead{font-size:1.08rem;max-width:590px}
+.subtle{font-size:.9rem;color:rgba(255,255,255,.72)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.glass-btn{border-radius:16px;padding:14px 20px;font-weight:750;transition:transform .18s,background .18s,box-shadow .18s}
+.glass-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.3);box-shadow:0 14px 32px rgba(77,10,39,.2)}
+.glass-btn.primary{background:rgba(255,255,255,.34);color:#651638;border-color:rgba(255,255,255,.65)}
+.glass-btn:active{transform:scale(.98)}
+.progress-wrap{height:7px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden;margin:22px 0 26px}
+.progress{height:100%;width:0;background:linear-gradient(90deg,#fff,#ffe0ec);border-radius:99px;transition:width .3s}
+.question-count{font-size:.82rem;font-weight:750;color:rgba(255,255,255,.76);margin-bottom:10px}
+.question{font-size:clamp(1.35rem,4vw,2rem);font-weight:800;line-height:1.25;margin:0 0 22px}
+textarea,.text-answer{
+  width:100%;border:1px solid rgba(255,255,255,.48);border-radius:17px;
+  padding:16px 17px;color:#fff;background:rgba(80,8,39,.14);
+  outline:none;box-shadow:inset 0 1px 8px rgba(80,8,39,.08);
+}
+textarea{min-height:125px;resize:vertical}
+textarea::placeholder,.text-answer::placeholder{color:rgba(255,255,255,.68)}
+textarea:focus,.text-answer:focus{border-color:#fff;background:rgba(80,8,39,.2)}
+.option-list{display:grid;grid-template-columns:1fr;gap:11px}
+.option{
+  display:flex;align-items:flex-start;gap:12px;text-align:left;width:100%;
+  padding:15px 17px;border-radius:16px;border:1px solid rgba(255,255,255,.34);
+  color:white;background:rgba(255,255,255,.13);backdrop-filter:blur(12px);
+  transition:background .16s,border .16s,transform .16s;
+}
+.option:hover{background:rgba(255,255,255,.23);transform:translateY(-1px)}
+.option.selected{background:rgba(255,255,255,.34);border-color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.option input{accent-color:#8b174b;margin-top:4px;transform:scale(1.15)}
+.small-note{font-size:.82rem;color:rgba(255,255,255,.72);margin-top:10px}
+.divider{height:1px;background:rgba(255,255,255,.22);margin:22px 0}
+.voice-card{padding:20px;border-radius:20px;background:rgba(69,8,34,.16);border:1px solid rgba(255,255,255,.25)}
+audio{width:100%;margin-top:14px}
+.status{font-size:.86rem;color:rgba(255,255,255,.78);margin-top:10px;min-height:1.3em}
+.game-area{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:380px;margin:22px auto}
+.cell{aspect-ratio:1;border:1px solid rgba(255,255,255,.45);border-radius:17px;background:rgba(255,255,255,.15);color:#fff;font-size:2rem;font-weight:800}
+.cell:disabled{opacity:.75;cursor:default}
+.result-list{display:grid;gap:12px;margin-top:20px}
+.result-item{padding:14px 16px;border-radius:15px;background:rgba(67,8,34,.14);border:1px solid rgba(255,255,255,.18)}
+.result-item b{display:block;margin-bottom:5px}
+footer{margin-top:18px;font-size:.75rem;color:rgba(70,9,39,.7);text-align:center}
+@media(min-width:650px){.option-list.two{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.app{padding:14px 12px 24px}.panel{border-radius:24px}.topbar{margin-bottom:10px}.actions .glass-btn{flex:1}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">Operation Freiheit · Vanessa</div>
+    <button class="sound-toggle" id="muteBtn" type="button" aria-pressed="false">♫ Musik an</button>
+  </div>
+  <main><section class="panel" id="screen" aria-live="polite"></section></main>
+  <footer>Eine kleine Mission mit ganz viel Liebe. ♡</footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // Alle Audiodateien liegen im selben Ordner wie diese index.html.
+  // Auf der Startseite gibt es bewusst keine Hintergrundmusik.
+  const AUDIO = {
+    simeon: "simeons-hintergrundmusik.mp3",
+    vanessa: "vanessas-hintergrundmusik.mp3",
+    prison: "gefaengnis-hintergrundmusik.mp3",
+    minigame: "minigame-hintergrundmusik.mp3",
+    outro: "outro-hintergrundmusik.mp3",
+    startVoice: "vanessa-start.mp3",
+    endVoice: "vanessa-ende.mp3"
+  };
+
+  const simeonQuestions = [
+    "Wofür hat Simeon momentan eine richtige Obsession?",
+    "Wohin würde Simeon am liebsten reisen?",
+    "Was sind Simeons Lieblingsessen und Lieblingsgetränk?",
+    "Was sind Simeons Lieblingssnacks und seine Lieblingsschokolade?",
+    "Was kann Simeon überhaupt nicht leiden?",
+    "Wie kann man Simeon immer eine Freude machen?",
+    "Was hilft Simeon, wenn er einen schlechten Tag hat?",
+    "Was ist Simeons Lieblingsfarbe?",
+    "Was ist Simeons Lieblingstier?",
+    "Was ist Simeons Hobby?"
+  ];
+
+  const vanessaQuestions = [
+    "Was sind Vanessas Lieblingsblumen?",
+    "Wofür hat Vanessa momentan eine richtige Obsession?",
+    "Wohin würde Vanessa am liebsten reisen?",
+    "Was sind Vanessas Lieblingsessen und Lieblingsgetränke?",
+    "Was sind Vanessas Lieblingssnacks und ihre Lieblingsschokolade?",
+    "Was kann Vanessa überhaupt nicht leiden?",
+    "Trägt Vanessa gerne Schmuck und schminkt sie sich gerne?",
+    "Wie kann man Vanessa immer eine Freude machen?",
+    "Was hilft Vanessa, wenn sie einen schlechten Tag hat?",
+    "Was ist Vanessas Lieblingstier?"
+  ];
+
+  // Mehrfachauswahl: Es können mehrere Antworten markiert werden.
+  const PRISON_QUESTIONS = [
+    {
+      q: "In welchem Bereich befindet sich Vanessa?",
+      options: ["Im Hochsicherheitstrakt", "Im Frauengefängnis", "Im alten Gefängnisflügel", "In einer geheimen Zelle"]
+    },
+    {
+      q: "Was vermisst Vanessa wohl am meisten hinter Gittern?",
+      options: ["Ihre Freiheit", "Ihr gemütliches Bett", "Gutes Essen", "Ihre Lieblingsmenschen"]
+    },
+    {
+      q: "Was wird Vanessa als Erstes nach ihrer Flucht machen?",
+      options: ["Zum Weihnachtsmarkt gehen", "Etwas Leckeres essen", "Simeon suchen", "Erst einmal richtig ausschlafen"]
+    },
+    {
+      q: "Wer wäre Vanessas Komplize bei einem Gefängnisausbruch?",
+      options: ["Simeon", "Eine andere Gefangene", "Ein heimlicher Wärter", "Sie schafft das ganz allein"]
+    },
+    {
+      q: "Welchen Gegenstand würde Vanessa heimlich ins Gefängnis schmuggeln?",
+      options: ["Ihr Handy", "Süßigkeiten", "Schmuck", "Ein Kuscheltier", "Etwas völlig anderes"]
+    }
+  ];
+
+  const screen = document.getElementById("screen");
+  const muteBtn = document.getElementById("muteBtn");
+  const audio = new Audio();
+  audio.preload = "auto";
+  audio.loop = true;
+
+  let musicEnabled = true;
+  let currentTrack = "";
+  let currentSection = "";
+  let questionIndex = 0;
+  let prisonIndex = 0;
+  let answers = {};
+  let selectedPrison = {};
+  let gamePosition = 0;
+  let gameMoves = 0;
+  let gameWon = false;
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  function setMusic(file) {
+    if (!musicEnabled || !file) return;
+    if (currentTrack === file && !audio.paused) return;
+
+    currentTrack = file;
+    audio.pause();
+    audio.src = file;
+    audio.loop = true;
+    audio.volume = 0.34;
+
+    const playPromise = audio.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {
+        muteBtn.textContent = "♫ Musik starten";
+      });
+    }
+    muteBtn.textContent = "♫ Musik an";
+  }
+
+  function stopMusic() {
+    audio.pause();
+    audio.currentTime = 0;
+    currentTrack = "";
+  }
+
+  function updateMuteButton() {
+    muteBtn.textContent = musicEnabled ? "♫ Musik an" : "♫ Musik aus";
+    muteBtn.setAttribute("aria-pressed", String(!musicEnabled));
+  }
+
+  muteBtn.addEventListener("click", () => {
+    musicEnabled = !musicEnabled;
+
+    if (!musicEnabled) {
+      stopMusic();
+    } else if (currentTrack) {
+      setMusic(currentTrack);
+    } else if (AUDIO[currentSection]) {
+      setMusic(AUDIO[currentSection]);
+    }
+
+    updateMuteButton();
+  });
+
+  function render(html) {
+    screen.innerHTML = html;
+    screen.style.animation = "none";
+    void screen.offsetWidth;
+    screen.style.animation = "";
+  }
+
+  function startPage() {
+    currentSection = "title";
+
+    render(`
+      <p class="eyebrow">Eine geheime Mission</p>
+      <h1>Der große<br>Ausbruch</h1>
+      <p class="lead">Vanessa, deine Mission ist klar: Löse die Aufgaben, knacke die Geheimnisse und erkämpfe dir deine Freiheit.</p>
+      <p class="subtle">Bist du bereit, Schönheit?</p>
+      <div class="actions"><button class="glass-btn primary" id="startBtn">Mission starten&nbsp; →</button></div>
+    `);
+
+    document.getElementById("startBtn").addEventListener("click", showStartVoice);
+  }
+
+  function showStartVoice() {
+    currentSection = "";
+    stopMusic();
+
+    render(`
+      <p class="eyebrow">Eingehende Nachricht</p>
+      <h2>Eine Nachricht für dich</h2>
+      <p>Bevor deine Mission beginnt, hör dir diese Nachricht an.</p>
+      <div class="voice-card">
+        <div>🎙️ <strong>Sprachnachricht</strong></div>
+        <audio id="startAudio" controls preload="metadata" src="${AUDIO.startVoice}"></audio>
+        <div class="status" id="voiceStatus">Die nächste Seite kannst du anschließend selbst öffnen.</div>
+      </div>
+      <div class="actions"><button class="glass-btn primary" id="toSimeon">Weiter zur ersten Runde&nbsp; →</button></div>
+    `);
+
+    const player = document.getElementById("startAudio");
+    player.addEventListener("play", stopMusic);
+
+    document.getElementById("toSimeon").addEventListener("click", () => startQuestionSection("simeon"));
+  }
+
+  function startQuestionSection(section) {
+    currentSection = section;
+    questionIndex = 0;
+    setMusic(AUDIO[section]);
+    renderPersonalQuestion();
+  }
+
+  function personalData() {
+    return currentSection === "simeon" ? simeonQuestions : vanessaQuestions;
+  }
+
+  function renderPersonalQuestion() {
+    const list = personalData();
+    const who = currentSection === "simeon" ? "Simeon" : "Vanessa";
+
+    if (questionIndex >= list.length) {
+      if (currentSection === "simeon") {
+        startQuestionSection("vanessa");
+      } else {
+        currentSection = "prison";
+        prisonIndex = 0;
+        setMusic(AUDIO.prison);
+        renderPrisonQuestion();
+      }
+      return;
+    }
+
+    const key = `${currentSection}_${questionIndex}`;
+
+    // Nur Vanessa bekommt die Haustierfrage – direkt nach ihrer Tierfrage.
+    const isPetQuestion = currentSection === "vanessa" && questionIndex === 9;
+    const petKey = "vanessa_pet";
+
+    render(`
+      <p class="eyebrow">${who}-Runde</p>
+      <div class="question-count">Frage ${questionIndex + 1} von 10</div>
+      <div class="progress-wrap"><div class="progress" style="width:${(questionIndex+1)*10}%"></div></div>
+      <h2 class="question">${escapeHtml(list[questionIndex])}</h2>
+      <textarea id="answer" placeholder="Deine Antwort …">${escapeHtml(answers[key] || "")}</textarea>
+
+      ${isPetQuestion ? `
+        <div class="divider"></div>
+        <p><strong>Hast du ein Haustier?</strong></p>
+        <div class="actions" style="margin-top:12px">
+          <button class="glass-btn ${answers.vanessa_hasPet === "Ja" ? "primary" : ""}" id="petYes">Ja</button>
+          <button class="glass-btn ${answers.vanessa_hasPet === "Nein" ? "primary" : ""}" id="petNo">Nein</button>
+        </div>
+        <div id="petField" style="display:${answers.vanessa_hasPet === "Ja" ? "block" : "none"};margin-top:14px">
+          <input class="text-answer" id="petAnswer" placeholder="Welches Haustier hast du?" value="${escapeHtml(answers[petKey] || "")}">
+        </div>
+      ` : ""}
+
+      <div class="actions">
+        <button class="glass-btn primary" id="nextQuestion">${questionIndex === 9 ? "Weiter" : "Nächste Frage"}&nbsp; →</button>
+      </div>
+    `);
+
+    document.getElementById("answer").addEventListener("input", e => {
+      answers[key] = e.target.value;
+    });
+
+    if (isPetQuestion) {
+      const yes = document.getElementById("petYes");
+      const no = document.getElementById("petNo");
+      const field = document.getElementById("petField");
+
+      yes.addEventListener("click", () => {
+        answers.vanessa_hasPet = "Ja";
+        field.style.display = "block";
+        yes.classList.add("primary");
+        no.classList.remove("primary");
+      });
+
+      no.addEventListener("click", () => {
+        answers.vanessa_hasPet = "Nein";
+        answers[petKey] = "";
+        field.style.display = "none";
+        no.classList.add("primary");
+        yes.classList.remove("primary");
+      });
+
+      const petInput = document.getElementById("petAnswer");
+      if (petInput) {
+        petInput.addEventListener("input", e => {
+          answers[petKey] = e.target.value;
+        });
+      }
+    }
+
+    document.getElementById("nextQuestion").addEventListener("click", () => {
+      if (isPetQuestion && answers.vanessa_hasPet === "Ja") {
+        const petInput = document.getElementById("petAnswer");
+        if (petInput) answers[petKey] = petInput.value;
+      }
+
+      questionIndex++;
+      renderPersonalQuestion();
+    });
+  }
+
+  function renderPrisonQuestion() {
+    currentSection = "prison";
+
+    if (prisonIndex >= PRISON_QUESTIONS.length) {
+      startMinigame();
+      return;
+    }
+
+    const item = PRISON_QUESTIONS[prisonIndex];
+    const key = `prison_${prisonIndex}`;
+    const chosen = selectedPrison[key] || [];
+
+    render(`
+      <p class="eyebrow">Gefängnisakte</p>
+      <div class="question-count">Frage ${prisonIndex+1} von 5</div>
+      <div class="progress-wrap"><div class="progress" style="width:${(prisonIndex+1)*20}%"></div></div>
+      <h2 class="question">${escapeHtml(item.q)}</h2>
+      <p class="subtle">Du kannst mehrere Antworten auswählen.</p>
+      <div class="option-list">${item.options.map(opt=>`
+        <label class="option ${chosen.includes(opt) ? "selected" : ""}">
+          <input type="checkbox" value="${escapeHtml(opt)}" ${chosen.includes(opt) ? "checked" : ""}>
+          <span>${escapeHtml(opt)}</span>
+        </label>`).join("")}
+      </div>
+      <div class="actions"><button class="glass-btn primary" id="prisonNext">${prisonIndex === 4 ? "Weiter zum Ausbruch" : "Weiter"}&nbsp; →</button></div>
+    `);
+
+    screen.querySelectorAll('input[type="checkbox"]').forEach(input => {
+      input.addEventListener("change", () => {
+        const values = [...screen.querySelectorAll('input[type="checkbox"]:checked')].map(x=>x.value);
+        selectedPrison[key] = values;
+        input.closest(".option").classList.toggle("selected", input.checked);
+      });
+    });
+
+    document.getElementById("prisonNext").addEventListener("click", () => {
+      selectedPrison[key] = [...screen.querySelectorAll('input[type="checkbox"]:checked')].map(x=>x.value);
+      prisonIndex++;
+      renderPrisonQuestion();
+    });
+  }
+
+  function startMinigame() {
+    currentSection = "minigame";
+    setMusic(AUDIO.minigame);
+    gamePosition = 0;
+    gameMoves = 0;
+    gameWon = false;
+    renderGame();
+  }
+
+  function renderGame() {
+    const exit = 8;
+
+    render(`
+      <p class="eyebrow">Sicherheitsprotokoll</p>
+      <h2>Finde den Weg in die Freiheit</h2>
+      <p>Du bist in deiner Zelle. Bewege dich mit den Feldern zum Ausgang unten rechts. Du hast höchstens 6 Schritte.</p>
+      <div class="game-area" id="gameGrid">
+        ${Array.from({length:9},(_,i)=>`<button class="cell" data-cell="${i}" ${gameWon || gameMoves>=6 ? "disabled" : ""}>${i===gamePosition?"🩷":i===exit?"🚪":([1,5].includes(i)?"🔒":"")}</button>`).join("")}
+      </div>
+      <p class="subtle" style="text-align:center">Schritte: ${gameMoves} / 6</p>
+      <div class="status" id="gameStatus" style="text-align:center">${gameWon ? "Geschafft! Der Weg nach draußen ist frei." : gameMoves>=6 ? "Der Weg ist blockiert. Versuch es noch einmal." : "Wähle ein benachbartes Feld."}</div>
+      <div class="actions" style="justify-content:center">
+        ${gameWon ? '<button class="glass-btn primary" id="gameContinue">Weiter&nbsp; →</button>' : gameMoves>=6 ? '<button class="glass-btn" id="gameRetry">Nochmal versuchen</button>' : ""}
+      </div>
+    `);
+
+    if (gameWon) {
+      document.getElementById("gameContinue").addEventListener("click", showEndVoice);
+      return;
+    }
+
+    if (gameMoves>=6) {
+      document.getElementById("gameRetry").addEventListener("click", startMinigame);
+      return;
+    }
+
+    screen.querySelectorAll("[data-cell]").forEach(btn => btn.addEventListener("click", () => {
+      const target = Number(btn.dataset.cell);
+      const rowDiff = Math.abs(Math.floor(target/3)-Math.floor(gamePosition/3));
+      const colDiff = Math.abs((target%3)-(gamePosition%3));
+
+      if (rowDiff+colDiff !== 1) return;
+
+      if ([1,5].includes(target)) {
+        document.getElementById("gameStatus").textContent = "Dieses Feld ist verschlossen. Probiere einen anderen Weg.";
+        return;
+      }
+
+      gamePosition = target;
+      gameMoves++;
+
+      if (gamePosition === exit) gameWon = true;
+      renderGame();
+    }));
+  }
+
+  function showEndVoice() {
+    currentSection = "";
+    stopMusic();
+
+    render(`
+      <p class="eyebrow">Letzte Nachricht</p>
+      <h2>Bevor sich die Tore öffnen …</h2>
+      <p>Hör dir noch diese letzte Nachricht an.</p>
+      <div class="voice-card">
+        <div>🎙️ <strong>Eine Nachricht zum Abschluss</strong></div>
+        <audio id="endAudio" controls preload="metadata" src="${AUDIO.endVoice}"></audio>
+        <div class="status" id="endStatus">Nach dem Ende der Nachricht geht es automatisch weiter.</div>
+      </div>
+      <div class="actions"><button class="glass-btn primary" id="skipEnd">Weiter zum Abschluss&nbsp; →</button></div>
+    `);
+
+    const player = document.getElementById("endAudio");
+    player.addEventListener("play", stopMusic);
+    player.addEventListener("ended", showVictory);
+    document.getElementById("skipEnd").addEventListener("click", showVictory);
+
+    player.addEventListener("error", () => {
+      document.getElementById("endStatus").textContent = "Die Audiodatei konnte nicht geladen werden. Du kannst trotzdem fortfahren.";
+    });
+  }
+
+  function showVictory() {
+    currentSection = "outro";
+    setMusic(AUDIO.outro);
+
+    render(`
+      <p class="eyebrow">Mission abgeschlossen</p>
+      <h1>Du hast es<br>geschafft!</h1>
+      <p class="lead">Herzlichen Glückwunsch, du hast es geschafft! Die Gefängnistore stehen offen – und dein Ausbruch ist gelungen.</p>
+      <p class="subtle">Stark gemacht, Prinzessin. ♡</p>
+      <div class="actions">
+        <button class="glass-btn primary" id="summaryBtn">Zusammenfassung ansehen</button>
+        <button class="glass-btn" id="downloadBtn">Antworten herunterladen ↓</button>
+      </div>
+    `);
+
+    document.getElementById("summaryBtn").addEventListener("click", showSummary);
+    document.getElementById("downloadBtn").addEventListener("click", downloadAnswers);
+  }
+
+  function allEntries() {
+    const rows = [];
+
+    simeonQuestions.forEach((q,i)=>rows.push([`Simeon – ${q}`,answers[`simeon_${i}`]||""]));
+
+    vanessaQuestions.forEach((q,i)=>rows.push([`Vanessa – ${q}`,answers[`vanessa_${i}`]||""]));
+    rows.push(["Vanessa – Hast du ein Haustier?",answers.vanessa_hasPet||""]);
+    if (answers.vanessa_hasPet==="Ja") {
+      rows.push(["Vanessa – Welches Haustier?",answers.vanessa_pet||""]);
+    }
+
+    PRISON_QUESTIONS.forEach((q,i)=>rows.push([q.q,(selectedPrison[`prison_${i}`]||[]).join("; ")]));
+    return rows;
+  }
+
+  function downloadAnswers() {
+    const rows = [["Frage","Antwort"],...allEntries()];
+    const csv = "\uFEFF" + rows.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(";")).join("\r\n");
+    const blob = new Blob([csv],{type:"text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href=url;
+    a.download="vanessa-ausbruch-antworten.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function showSummary() {
+    const entries = allEntries();
+    currentSection = "outro";
+
+    render(`
+      <p class="eyebrow">Deine Antworten</p>
+      <h2>Die Auswertung</h2>
+      <p>Hier ist deine komplette Antwortübersicht. Du kannst sie auch als Datei herunterladen.</p>
+      <div class="result-list">
+        ${entries.map(([q,a])=>`<div class="result-item"><b>${escapeHtml(q)}</b><span>${escapeHtml(a || "Keine Antwort eingetragen")}</span></div>`).join("")}
+      </div>
+      <div class="actions">
+        <button class="glass-btn primary" id="summaryDownload">Antworten herunterladen ↓</button>
+        <button class="glass-btn" id="backVictory">Zurück</button>
+      </div>
+    `);
+
+    document.getElementById("summaryDownload").addEventListener("click",downloadAnswers);
+    document.getElementById("backVictory").addEventListener("click",showVictory);
+  }
+
+  startPage();
+  updateMuteButton();
+})();
+</script>
+</body>
+</html>
